@@ -27,13 +27,13 @@ render_terminal(mandelbrot_set, resolution)
 
 while (True):
   query = input().split()
-  if (len(query == 0)):
+  if (len(query) == 0):
     continue
   command = query[0]
   if (len(query) == 1):
     if (command == "q"):
         exit(0)
-        
+
     delta = Decimal(0.25) / scale
     if (command == "+"):
       if (scale <= 1):
