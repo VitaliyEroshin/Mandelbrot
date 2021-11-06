@@ -27,7 +27,7 @@ def render(resolution=640, center_x=-0.75, center_y=0.25,
     for y in range(resolution):
       value = mandelbrot_set.get_point_value(x, y)
       draw.point((x, y), (int(value * 255), int(value * 255), int(value * 255)))
-
+  
   filename = "./archive/" + filename + '.png'
   image.save(filename)
   print("Render finished. File saved: " + filename)

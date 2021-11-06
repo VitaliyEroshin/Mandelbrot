@@ -1,7 +1,24 @@
 import mandelbrot
 from decimal import Decimal
 from datetime import datetime
+import nprender
 import render
+import os
+import platform
+
+_system = ""
+
+def init():
+  _system = platform.system()
+  if (_system == 'Darwin' or _system == 'Linux'):
+    os.system('resize -s 41 80')
+
+  elif (_system == 'Windows'):
+    os.system('$host.UI.RawUI.WindowSize.Width = 80')
+    os.system('$host.UI.RawUI.WindowSize.Height = 41')
+    
+
+init()
 
 resolution = 80
 cx = Decimal(0)
@@ -75,7 +92,7 @@ while (True):
       cy -= value
     elif (command == "render"):
       filename = datetime.today().strftime('%Y%m%d%H%M%S')
-      render.render(resolution=int(value), center_x=cx, center_y=cy, scale=scale, threshold=threshold, max_iterations=max_iterations, filename=filename, print_time=True)
+      nprender.render(resolution=int(value), center_x=float(cx), center_y=float(cy), scale=float(scale), threshold=float(threshold), max_iterations=max_iterations, filename=filename, print_time=True)
 
     elif (command == "q"):
       break
