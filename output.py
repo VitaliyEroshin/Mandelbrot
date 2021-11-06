@@ -13,10 +13,6 @@ class IO:
     if (self._system == 'Windows'):
       print("Windows system detected")
 
-      # Terminal resize
-      os.system('$host.UI.RawUI.WindowSize.Width = ' + str(self._terminal_width))
-      os.system('$host.UI.RawUI.WindowSize.Height = ' + str(self._terminal_height))
-
     else:
       print("Unix system detected")
 
