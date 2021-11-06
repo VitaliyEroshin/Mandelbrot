@@ -18,7 +18,7 @@ class NumpyRender:
     else:
       import numpy as np
     
-    array = np.zeros((resolution, resolution), dtype=np.complex256)
+    array = np.zeros((resolution, resolution), dtype=np.complex128)
     array[:, :].imag = np.arange(0, resolution)
     array = array.T
     array[:, :].real = np.arange(0, resolution)
@@ -37,7 +37,7 @@ class NumpyRender:
       import numpy as np
 
     a = self.init_np_array(resolution, center_x, center_y, scale, framework)[:][:]
-    z = np.zeros((resolution, resolution), dtype=np.complex256)
+    z = np.zeros((resolution, resolution), dtype=np.complex128)
     iterations = np.zeros((resolution, resolution), dtype=np.int64)
 
     in_set = (iterations == 0)

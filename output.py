@@ -1,7 +1,7 @@
 import os
 import platform
 from PIL import Image
-
+from datetime import datetime
 class IO:
   _system = ''
   _terminal_width = 80
@@ -28,7 +28,7 @@ class IO:
     percentage = it * 100 // max_it
 
     if (percentage % 5 == 0):
-      print(percentage + "%")
+      print(str(percentage) + "%")
     
   def get_progress(self):
     if (self._system == "Windows"):
@@ -41,6 +41,7 @@ class IO:
     save = input("Save? (y/n) ")
     
     if save == "y":
+      filename = datetime.now().strftime('%Y%m%d%H%M%S')
       filename = "./archive/" + filename + '.png'
       im.convert('RGB').save(filename)
     
