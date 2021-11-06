@@ -7,10 +7,10 @@ class Mandelbrot:
   center = (Decimal(-0.75), Decimal(0.25))
   scale = 3
   threshold = Decimal(2)
-  max_iterations = 255
+  max_iterations = 80
 
-  def __init__(self, resolution=640, center=(Decimal(-0.75), Decimal(0.25)), 
-               scale=Decimal(3), threshold=Decimal(2), max_iterations=255):
+  def __init__(self, resolution=640, center=(Decimal(0), Decimal(0)), 
+               scale=Decimal(3), threshold=Decimal(2), max_iterations=80):
     self.resolution = resolution
     self.center = center
     self.scale = scale

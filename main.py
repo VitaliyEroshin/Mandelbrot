@@ -1,83 +1,99 @@
-import render
-from decimal import Decimal
+import output
+import sys
+import terminal_render
 from datetime import datetime
 
+def setup_render(io):
+  mode = input("Enter mode (cupy, numpy, python - default): ")
+  if (mode == 'cupy'):
+    import cupy as np
+    print("Cupy detected, using cuda for matrix multiplication")
+    MODE = "cupy"
+  elif (mode == 'numpy'):
+    import numpy as np
+    print("Numpy detected, using it for matrix multiplication")
+    MODE = "numpy"
+  else:
+    mode = 'python'
+
+  if mode == "python":
+    print("Numpy or Cupy are not detected, using slow python")
+    import python_render
+    from decimal import Decimal
+    render = python_render.Render(io.get_progress(), io.process_image)
+    return mode, int, Decimal,  render.render
+  else:
+    import numpy_render
+    render = numpy_render.NumpyRender(io.get_progress(), io.process_image, mode)
+    return mode, np.int16, np.float64, render.render
+
 def main():
-  delete_line = ('\033[F' + ' ' * 70 + '\033[F')
-  resolution = input("resolution: ")
-  print(delete_line)
-  filename = input("filename: ")
-  print(delete_line)
-  center_x = input("center x:")
-  print(delete_line)
-  center_y = input("center y:") 
-  print(delete_line)
-  scale = input("scale: ")
-  print(delete_line)
-  threshold = input("threshold: ")
-  print(delete_line)
-  max_iterations = input("max_iterations x:")
-  print(delete_line)
-  print_time = input("Do you want to print execution time? (y/n) ")
-  print(delete_line)
+  io = output.IO()
+  framework, integer_type, float_type, render = setup_render(io)
 
-  if filename == "":
-    filename = datetime.today().strftime('%Y-%m-%d-%H:%M:%S')
+  configuration = {
+    "resolution" : 256,
+    "center_x" : 0.0,
+    "center_y" : 0.0,
+    "scale" : 0.5,
+    "threshold" : 2.0,
+    "max_iterations" : 80
+  }
 
-  if resolution == "":
-    resolution = 480
-  else:
-    resolution = int(resolution)
+  for x in configuration:
+    print(x, configuration[x])
 
-  if center_x == "":
-    center_x = 0
-  else:
-    center_x = Decimal(center_x)
+  terminal_render.render(configuration, io)
 
-  if center_y == "":
-    center_y = 0
-  else:
-    center_y = Decimal(center_y)
+  while (True):
+    argv = input().split()
+    argc = len(argv)
+    if (argc == 0):
+      continue
+    
+    if (argc == 1):
+      if (argv[0] == "q"):
+          exit(0)
 
-  if scale == "":
-    scale = 0.5
-  else:
-    scale = Decimal(scale)
+      delta = 0.25 / configuration['scale']
 
-  if threshold == "":
-    threshold = 2
-  else:
-    threshold = Decimal(threshold)
-  
-  if max_iterations == "":
-    max_iterations = 255
-  else:
-    max_iterations = int(max_iterations)
+      if (argv[0] == "+"):
+        if (configuration['scale'] <= 1):
+          configuration['scale'] *= 2
+        else:
+          configuration['scale'] **= 1.2
 
-  print_time_b = False
-  if print_time == "y":
-    print_time_b = True
+        delta = 0.25 / configuration['scale']
 
-  print("Okay, current settings are: ")
-  print(f"   resolution: {resolution}")
-  print(f"   center coordinates: ({center_x}, {center_y})")
-  print(f"   scale: {scale}")
-  print(f"   threshold: {threshold}")
-  print(f"   maximal interation: {max_iterations}")
-  print(f"   filename: {filename}")
-  print(f"   print time: {print_time_b}")
-  
-  ok = input("Do you want to continue? (y/n) ")
+      elif (argv[0] == "-"):
+        if (configuration['scale'] <= 2):
+          configuration['scale'] *= 0.5
+        else:
+          configuration['scale'] **= 1 / 1.2
+      
+      elif (argv[0] == "a"):
+        configuration['center_x'] -= delta
+      elif (argv[0] == "d"):
+        configuration['center_x'] += delta
+      elif (argv[0] == "w"):
+        configuration['center_y'] -= delta
+      elif (argv[0] == "s"):
+        configuration['center_y'] += delta
 
-  if (ok != "y"):
-    print("Okay, bye")
-    return
+    else:
+      if (argv[0] == "render"):
+        configuration['resolution'] = int(argv[1])
 
-  
-  
-  render.render(resolution=resolution, center_x=center_x, center_y=center_y,
-                scale=scale, threshold=threshold, max_iterations=max_iterations,
-                filename=filename, print_time=print_time_b)
+        filename = datetime.today().strftime('%Y%m%d%H%M%S')
 
+        render(integer_type(configuration['resolution']),
+              float_type(configuration['center_x']),
+              float_type(configuration['center_y']),
+              float_type(configuration['scale']),
+              float_type(configuration['threshold']),
+              integer_type(configuration['max_iterations']),
+              filename, framework, True)
+
+    terminal_render.render(configuration, io)
 
 main()
