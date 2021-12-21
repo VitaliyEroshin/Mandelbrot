@@ -4,7 +4,7 @@
 ```
 python3 main.py
 ```
-2. Enter your mode: if you have numpy or cupy installed, it's better one of them (significantly faster).
+2. Enter your mode: if you have numpy or cupy installed, it's better to use one of them (significantly faster).
 3. Now, when you see visual representation of set, you can move around (wasd). For example: ```a <ENTER>``` will move you to the left. Or zoom in (```+ <ENTER> ```) / zoom out (```- <ENTER> ```).
 4. When you are happy with your representation, you can get a better picture with ```render 512 <ENTER>```. The number 512 is resolution (you can enter any number instead). Final picture will be 512x512.
 5. Have a great time!
