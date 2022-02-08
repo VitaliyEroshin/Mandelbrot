@@ -50,4 +50,3 @@ class Mandelbrot:
         break
       it += 1
     return it / self.max_iterations
-
