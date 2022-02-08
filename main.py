@@ -1,6 +1,7 @@
 import output
 import sys
-import terminal_render
+import src.terminal as terminal
+
 from datetime import datetime
 
 def setup_render(io):
@@ -18,12 +19,12 @@ def setup_render(io):
 
   if mode == "python":
     print("Numpy or Cupy are not detected, using slow python")
-    import python_render
+    import src.pil as pil
     from decimal import Decimal
-    render = python_render.Render(io.get_progress(), io.process_image)
+    render = pil.Render(io.get_progress(), io.process_image)
     return mode, int, Decimal,  render.render
   else:
-    import numpy_render
+    import numpy_src.render as numpy_render
     render = numpy_render.NumpyRender(io.get_progress(), io.process_image, mode)
     return mode, np.int16, np.float64, render.render
 
@@ -43,7 +44,7 @@ def main():
   for x in configuration:
     print(x, configuration[x])
 
-  terminal_render.render(configuration, io)
+  terminal.render(configuration, io)
 
   while (True):
     argv = input().split()
@@ -94,6 +95,6 @@ def main():
               integer_type(configuration['max_iterations']),
               filename, framework, True)
 
-    terminal_render.render(configuration, io)
+    terminal.render(configuration, io)
 
 main()
